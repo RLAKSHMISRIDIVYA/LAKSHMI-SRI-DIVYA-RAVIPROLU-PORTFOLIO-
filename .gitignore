@@ -1,0 +1,11 @@
+# Git ignore file for Divya Portfolio
+# Exclude raw bulky folders containing scanned images and raw PPTX/videos (unfit for GitHub)
+LAKSHMI SRI DIVYA RAVIPROLU_CERTIFICATES_AND_PROJECTS/
+LAKSHMI SRI DIVYA RAVIPROLU_PROJECTS/
+
+# Exclude specific excessively large asset presentation (270MB exceeds GitHub limit)
+assets/projects/8_green_presentation.pptx
+
+# OS generated files
+.DS_Store
+Thumbs.db
