@@ -175,61 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setInterval(rotateTracks, 15000); // rotate every 15s
 
-  // --- 8. CONTACT FORM HANDLER (FormSubmit.co API Integration) ---
+  // --- 8. CONTACT FORM HANDLER ---
   const contactForm = document.getElementById('contactForm');
-  const formFeedback = document.getElementById('formFeedback');
 
-  if (contactForm && formFeedback) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
+  if (contactForm) {
+    contactForm.addEventListener('submit', () => {
       const btn = contactForm.querySelector('button');
-      const originalText = btn.innerHTML;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
-      btn.disabled = true;
-
-      const nameVal = document.getElementById('formName').value;
-      const emailVal = document.getElementById('formEmail').value;
-      const messageVal = document.getElementById('formMessage').value;
-
-      // Submit via FormSubmit.co AJAX Endpoint
-      fetch("https://formsubmit.co/ajax/raviprolu.lakshmisridivya@gmail.com", {
-        method: "POST",
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: nameVal,
-          email: emailVal,
-          message: messageVal,
-          _subject: "New Portfolio Transmission from " + nameVal,
-          _captcha: "false"
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        
-        formFeedback.classList.remove('hidden', 'success', 'error');
-        if (data.success === "true" || data.success === true) {
-          formFeedback.classList.add('success');
-          formFeedback.textContent = "Transmission successful! The message has been sent to Divya's Inbox.";
-          contactForm.reset();
-        } else {
-          formFeedback.classList.add('error');
-          formFeedback.textContent = "Transmission failed. Error: " + (data.message || "Unknown error occurred.");
-        }
-      })
-      .catch(err => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        formFeedback.classList.remove('hidden', 'success', 'error');
-        formFeedback.classList.add('error');
-        formFeedback.textContent = "Transmission failed. Please check your network connection.";
-        console.error("FormSubmit Error:", err);
-      });
     });
   }
 
