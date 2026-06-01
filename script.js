@@ -203,7 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
           name: nameVal,
           email: emailVal,
           message: messageVal,
-          _subject: "New Portfolio Transmission from " + nameVal
+          _subject: "New Portfolio Transmission from " + nameVal,
+          _captcha: "false"
         })
       })
       .then(response => response.json())
