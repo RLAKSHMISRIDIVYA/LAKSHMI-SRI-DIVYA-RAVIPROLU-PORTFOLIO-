@@ -177,23 +177,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
  
 
+
 // --- 8. CONTACT FORM HANDLER ---
 const contactForm = document.getElementById('contactForm');
 const formFeedback = document.getElementById('formFeedback');
 
-if (contactForm) {
-  contactForm.addEventListener('submit', async function (event) {
+if (contactForm && formFeedback) {
+  contactForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-
-    if (!formFeedback) {
-      console.error('Contact form feedback element is missing.');
-      return;
-    }
 
     const btn = contactForm.querySelector('button[type="submit"]');
 
     if (!btn) {
-      console.error('Submit button not found.');
+      console.error('Contact form submit button not found.');
       return;
     }
 
@@ -201,7 +197,7 @@ if (contactForm) {
 
     btn.disabled = true;
     btn.innerHTML =
-      '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
+      '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
 
     formFeedback.classList.remove('hidden');
     formFeedback.className = 'form-feedback';
@@ -211,19 +207,22 @@ if (contactForm) {
     formFeedback.setAttribute('aria-live', 'polite');
 
     try {
-      const response = await fetch(contactForm.action, {
-        method: 'POST',
-        body: new FormData(contactForm),
-        headers: {
-          Accept: 'application/json'
+      const response = await fetch(
+        'https://api.web3forms.com/submit',
+        {
+          method: 'POST',
+          body: new FormData(contactForm),
+          headers: {
+            Accept: 'application/json'
+          }
         }
-      });
+      );
 
       const result = await response.json();
 
       if (!response.ok || !result.success) {
         throw new Error(
-          result.message || `Request failed (${response.status}).`
+          result.message || 'The message could not be sent.'
         );
       }
 
@@ -234,10 +233,10 @@ if (contactForm) {
       contactForm.reset();
 
     } catch (error) {
-      console.error('Contact form submission error:', error);
+      console.error('Contact form error:', error);
 
       formFeedback.textContent =
-        '✗ Unable to confirm delivery. Please check your connection and try again.';
+        '✗ Message could not be confirmed. Please try again.';
       formFeedback.style.color = '#ef4444';
 
     } finally {
@@ -245,6 +244,10 @@ if (contactForm) {
       btn.innerHTML = originalButtonHTML;
     }
   });
+} else {
+  console.error(
+    'Contact form or feedback element is missing from index.html.'
+  );
 }
 
 
