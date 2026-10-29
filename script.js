@@ -175,17 +175,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setInterval(rotateTracks, 15000); // rotate every 15s
 
-  // --- 8. CONTACT FORM HANDLER ---
-  const contactForm = document.getElementById('contactForm');
+ 
+// --- 8. CONTACT FORM HANDLER ---
+const contactForm = document.getElementById('contactForm');
+const formFeedback = document.getElementById('formFeedback');
 
-  if (contactForm) {
-    contactForm.addEventListener('submit', () => {
-      const btn = contactForm.querySelector('button');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
-    });
-  }
+if (contactForm && formFeedback) {
+  contactForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-});
+    const btn = contactForm.querySelector('button[type="submit"]');
+    const originalButtonHTML = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML =
+      '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
+
+    formFeedback.classList.remove('hidden');
+    formFeedback.textContent = 'Sending your message...';
+    formFeedback.setAttribute('role', 'status');
+    formFeedback.style.color = '#fbbf24';
+
+    try {
+      const response = await fetch(contactForm.action, {
+        method: 'POST',
+        body: new FormData(contactForm),
+        headers: {
+          Accept: 'application/json'
+        }
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        formFeedback.textContent =
+          '✓ Sent Successfully! Your message has been delivered.';
+        formFeedback.style.color = '#22c55e';
+
+        contactForm.reset();
+      } else {
+        throw new Error(
+          result.message || 'Unable to send your message.'
+        );
+      }
+    } catch (error) {
+      formFeedback.textContent =
+        '✗ Message not sent. Please try again.';
+      formFeedback.style.color = '#ef4444';
+
+      console.error('Contact form error:', error);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalButtonHTML;
+    }
+  });
+}
+
 
 // --- 9. MODAL CONTROLS (PROJECT DETAILS) ---
 const modalOverlay = document.getElementById('modalOverlay');
