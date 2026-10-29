@@ -278,6 +278,7 @@ function closeProjectModal() {
   }
 }
 
+
 // Close modal when clicking overlay
 if (modalOverlay) {
   modalOverlay.addEventListener('click', (e) => {
@@ -286,3 +287,6 @@ if (modalOverlay) {
     }
   });
 }
+
+});
+
