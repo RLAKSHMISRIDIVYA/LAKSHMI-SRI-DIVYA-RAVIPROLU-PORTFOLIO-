@@ -249,44 +249,44 @@ if (contactForm) {
 
 
 
+
 // --- 9. MODAL CONTROLS (PROJECT DETAILS) ---
 const modalOverlay = document.getElementById('modalOverlay');
 
 function openProjectModal(projectId) {
-  if (modalOverlay) {
-    modalOverlay.classList.add('active');
-    
-    // Hide all modal cards
-    document.querySelectorAll('.modal-card').forEach(card => {
-      card.classList.add('hidden');
-    });
-    
-    // Show specific modal card
-    const targetCard = document.getElementById(`modal-${projectId}`);
-    if (targetCard) {
-      targetCard.classList.remove('hidden');
-    }
+  if (!modalOverlay) return;
+
+  modalOverlay.classList.add('active');
+
+  document.querySelectorAll('.modal-card').forEach(card => {
+    card.classList.add('hidden');
+  });
+
+  const targetCard = document.getElementById(`modal-${projectId}`);
+
+  if (targetCard) {
+    targetCard.classList.remove('hidden');
   }
 }
 
 function closeProjectModal() {
-  if (modalOverlay) {
-    modalOverlay.classList.remove('active');
-    document.querySelectorAll('.modal-card').forEach(card => {
-      card.classList.add('hidden');
-    });
-  }
+  if (!modalOverlay) return;
+
+  modalOverlay.classList.remove('active');
+
+  document.querySelectorAll('.modal-card').forEach(card => {
+    card.classList.add('hidden');
+  });
 }
 
-
-// Close modal when clicking overlay
 if (modalOverlay) {
-  modalOverlay.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) {
+  modalOverlay.addEventListener('click', (event) => {
+    if (event.target === modalOverlay) {
       closeProjectModal();
     }
   });
 }
 
-});
+}); // Closes the main DOMContentLoaded function
+
 
