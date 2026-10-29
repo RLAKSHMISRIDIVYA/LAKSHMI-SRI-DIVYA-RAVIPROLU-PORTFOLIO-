@@ -176,15 +176,27 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(rotateTracks, 15000); // rotate every 15s
 
  
+
 // --- 8. CONTACT FORM HANDLER ---
 const contactForm = document.getElementById('contactForm');
 const formFeedback = document.getElementById('formFeedback');
 
-if (contactForm && formFeedback) {
-  contactForm.addEventListener('submit', async (event) => {
+if (contactForm) {
+  contactForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
+    if (!formFeedback) {
+      console.error('Contact form feedback element is missing.');
+      return;
+    }
+
     const btn = contactForm.querySelector('button[type="submit"]');
+
+    if (!btn) {
+      console.error('Submit button not found.');
+      return;
+    }
+
     const originalButtonHTML = btn.innerHTML;
 
     btn.disabled = true;
@@ -192,9 +204,11 @@ if (contactForm && formFeedback) {
       '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
 
     formFeedback.classList.remove('hidden');
+    formFeedback.className = 'form-feedback';
     formFeedback.textContent = 'Sending your message...';
-    formFeedback.setAttribute('role', 'status');
     formFeedback.style.color = '#fbbf24';
+    formFeedback.setAttribute('role', 'status');
+    formFeedback.setAttribute('aria-live', 'polite');
 
     try {
       const response = await fetch(contactForm.action, {
@@ -207,29 +221,32 @@ if (contactForm && formFeedback) {
 
       const result = await response.json();
 
-      if (response.ok && result.success) {
-        formFeedback.textContent =
-          '✓ Sent Successfully! Your message has been delivered.';
-        formFeedback.style.color = '#22c55e';
-
-        contactForm.reset();
-      } else {
+      if (!response.ok || !result.success) {
         throw new Error(
-          result.message || 'Unable to send your message.'
+          result.message || `Request failed (${response.status}).`
         );
       }
-    } catch (error) {
+
       formFeedback.textContent =
-        '✗ Message not sent. Please try again.';
+        '✓ Sent Successfully! Your message has been delivered.';
+      formFeedback.style.color = '#22c55e';
+
+      contactForm.reset();
+
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+
+      formFeedback.textContent =
+        '✗ Unable to confirm delivery. Please check your connection and try again.';
       formFeedback.style.color = '#ef4444';
 
-      console.error('Contact form error:', error);
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalButtonHTML;
     }
   });
 }
+
 
 
 // --- 9. MODAL CONTROLS (PROJECT DETAILS) ---
